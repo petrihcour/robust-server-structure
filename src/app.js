@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const pastes = require("./data/pastes-data");
+
+
 
 // TODO: Follow instructions in the checkpoint to implement ths API.
 
@@ -14,9 +17,16 @@ app.use("/pastes/:pasteId", (req, res, next) => {
   }
 });
 
-app.use("/pastes", (req, res) => {
+app.get("/pastes", (req, res) => {
   res.json({ data: pastes });
 });
+
+// POST request to /pastes
+
+app.post("/pastes", (req, res, next) => {
+
+})
+
 
 // Not found handler
 app.use((request, response, next) => {
