@@ -44,14 +44,22 @@ app.post("/pastes", bodyHasTextProperty, (req, res, next) => {
 
 // TODO: Follow instructions in the checkpoint to implement ths API.
 
-app.use("/pastes/:pasteId", (req, res, next) => {
+function validatePasteId(req, res, next) {
   const { pasteId } = req.params;
   const foundPaste = pastes.find((paste) => Number(pasteId) === paste.id);
   if (foundPaste) {
-    res.json({ data: foundPaste });
+    req.foundPaste = foundPaste;
+    next();
   } else {
-    next(`Paste id not found: ${pasteId}`);
+    next({
+      status: 404,
+      message: `Paste id not found: ${pasteId}`,
+    });
   }
+}
+
+app.use("/pastes/:pasteId", validatePasteId, (req, res, next) => {
+  res.json({ data: req.foundPaste });
 });
 
 // Not found handler
