@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
 const pastes = require("./data/pastes-data");
+
+// use app.use express.json to parse json data and add a body property to the request (req.body)
+app.use(express.json());
 
 
 
