@@ -17,6 +17,7 @@ let lastPasteId = pastes.reduce((maxId, paste) => Math.max(maxId, paste.id), 0);
 
 app.post("/pastes", (req, res, next) => {
   const { data: { user_id, name, syntax, expiration, exposure, text } = {} } = req.body;
+  if (text) { 
   const newPaste = {
     id: ++lastPasteId,
     user_id,
@@ -27,7 +28,10 @@ app.post("/pastes", (req, res, next) => {
     text,
   };
   pastes.push(newPaste);
-  res.json({ data: newPaste })
+  res.status(201).json({ data: newPaste })
+  } else {
+    res.sendStatus(400);
+  }
 });
 
 // TODO: Follow instructions in the checkpoint to implement ths API.
