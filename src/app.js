@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const pastes = require("./data/pastes-data");
-
+//adding to text
 // use app.use express.json to parse json data and add a body property to the request (req.body)
 app.use(express.json());
 
