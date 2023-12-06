@@ -1,66 +1,14 @@
 const express = require("express");
 const app = express();
-const pastes = require("./data/pastes-data");
-//adding to text
+const pastesRouter = require("./pastes/pastes.router");
+const usersRouter = require("./pastes/users.router");
+
 // use app.use express.json to parse json data and add a body property to the request (req.body)
 app.use(express.json());
 
-app.get("/pastes", (req, res) => {
-  res.json({ data: pastes });
-});
+app.use("/pastes", pastesRouter); // Note: app.use!!
+app.use("/users", usersRouter);
 
-// New middleware function to validate request body for post request
-
-function bodyHasTextProperty(req, res, next) {
-  const { data: { text } = {} } = req.body;
-  if (text) {
-    return next(); // call next without an error message if the result exists
-  }
-  next({
-    status: 400,
-    message: "A 'text' property is required.",
-  });
-}
-
-// POST request to /pastes
-
-let lastPasteId = pastes.reduce((maxId, paste) => Math.max(maxId, paste.id), 0);
-
-app.post("/pastes", bodyHasTextProperty, (req, res, next) => {
-  const { data: { user_id, name, syntax, expiration, exposure, text } = {} } =
-    req.body;
-  const newPaste = {
-    id: ++lastPasteId,
-    user_id,
-    name,
-    syntax,
-    expiration,
-    exposure,
-    text,
-  };
-  pastes.push(newPaste);
-  res.status(201).json({ data: newPaste });
-});
-
-// TODO: Follow instructions in the checkpoint to implement ths API.
-
-function validatePasteId(req, res, next) {
-  const { pasteId } = req.params;
-  const foundPaste = pastes.find((paste) => Number(pasteId) === paste.id);
-  if (foundPaste) {
-    req.foundPaste = foundPaste;
-    next();
-  } else {
-    next({
-      status: 404,
-      message: `Paste id not found: ${pasteId}`,
-    });
-  }
-}
-
-app.use("/pastes/:pasteId", validatePasteId, (req, res, next) => {
-  res.json({ data: req.foundPaste });
-});
 
 // Not found handler
 app.use((request, response, next) => {
