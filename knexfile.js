@@ -1,46 +1,48 @@
 // Update with your config settings.
+require("dotenv").config();
 
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
+
+const {
+  NODE_ENV = "development",
+  DEVELOPMENT_DATABASE_URL,
+  PRODUCTION_DATABASE_URL,
+} = process.env;
+const URL = 
+NODE_ENV === "production"
+  ? PRODUCTION_DATABASE_URL
+  : DEVELOPMENT_DATABASE_URL;
+
 module.exports = {
 
   development: {
-    client: 'sqlite3',
-    connection: {
-      filename: './dev.sqlite3'
+    client: 'postgresql',
+    connection: URL,
+    migrations: {
+      directory: __dirname + "/src/db/migrations",
     }
   },
 
   staging: {
     client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
+    connection: URL,
     pool: {
       min: 2,
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      directory: __dirname + "/src/db/migrations",
     }
   },
 
   production: {
     client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
+    connection: URL,
     pool: {
       min: 2,
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      directory: __dirname + "/src/db/migrations",
     }
   }
 
